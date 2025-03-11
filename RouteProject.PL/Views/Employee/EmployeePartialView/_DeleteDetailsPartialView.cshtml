@@ -1,0 +1,63 @@
+﻿@using RouteProject.DAL.Models
+@model Employee
+
+<input type="hidden" asp-for="Id" />
+<div class="my-3">
+    <label asp-for="Name" class="col-form-label"></label>
+    <input asp-for="Name" class="form-control" readonly />
+
+</div>
+
+<div class="my-3">
+    <label asp-for="Age" class="col-form-label"></label>
+    <input asp-for="Age" type="number" class="form-control" readonly />
+
+</div>
+
+<div class="my-3">
+    <label asp-for="Email" class="col-form-label"></label>
+    <input asp-for="Email" type="email" class="form-control" readonly />
+
+</div>
+
+<div class="my-3">
+    <label asp-for="Address" class="col-form-label"></label>
+    <input asp-for="Address" class="form-control" readonly />
+
+</div>
+
+<div class="my-3">
+    <label asp-for="Phone" class="col-form-label"></label>
+    <input asp-for="Phone" type="tel" class="form-control" readonly />
+
+</div>
+
+<div class="my-3">
+    <label asp-for="Salary" class="col-form-label"></label>
+    <input asp-for="Salary" type="number" step="0.01" class="form-control" readonly />
+
+</div>
+
+<div class="my-3">
+    <label asp-for="IsActive" class="col-form-label"></label>
+    <input asp-for="IsActive" type="checkbox" class="form-check" disabled />
+
+</div>
+
+<div class="my-3">
+    <label asp-for="IsDeleted" class="col-form-label"></label>
+    <input asp-for="IsDeleted" type="checkbox" class="form-check" disabled />
+
+</div>
+
+<div class="my-3">
+    <label asp-for="HiringDate" class="col-form-label"></label>
+    <input asp-for="HiringDate" type="date" class="form-control" readonly />
+
+</div>
+
+<div class="my-3">
+    <label asp-for="CreateAt" class="col-form-label"></label>
+    <input asp-for="CreateAt" type="date" class="form-control" readonly />
+
+</div>

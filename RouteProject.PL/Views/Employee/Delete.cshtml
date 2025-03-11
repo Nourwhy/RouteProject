@@ -1,0 +1,21 @@
+﻿@using RouteProject.DAL.Models
+@model Employee
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete Page</h1>
+
+<br />
+<br />
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <partial name="EmployeePartialView/_DeleteDetailsPartialView" />
+   
+    <div class="mt-4">
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</form>

@@ -1,0 +1,17 @@
+﻿@using RouteProject.DAL.Models
+@model Department
+
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details Page</h1>
+
+<partial name="DepartmentPartialView/_DeleteDetailsPartialView" />
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
+
+
