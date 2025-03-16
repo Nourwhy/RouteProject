@@ -21,10 +21,11 @@ namespace RouteProject.PL.Controllers
         {
 
             var employees = _employeeRepository.GetAll();
-            //Dictionary :
-            //1.ViewData
-            //2.ViewBag
-        //3.TempDatadd
+            ////Dictionary : 3 propery
+            ////1.ViewData : Transfer Extra Information From Controller (Action) To View
+            //ViewData["Message"] = "Hello From ViewData";
+            ////2.ViewBag:Transfer Extra Information From Controller (Action) To View
+            //ViewBag.Message = new { Message = "Hello From ViewBag" };
             return View(employees);
         }
         [HttpGet]
@@ -37,29 +38,38 @@ namespace RouteProject.PL.Controllers
         [HttpPost]
         public IActionResult Create(CreateEmployeeDto model)
         {
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
+                try
+                {
+                    var employee = new Employee()
+                    {
 
-                var employee = new Employee()
+                        Name = model.Name,
+                        Address = model.Address,
+                        Age = model.Age,
+                        CreateAt = model.CreateAt,
+                        HiringDate = model.HiringDate,
+                        Email = model.Email,
+                        IsActive = model.IsActive,
+                        IsDeleted = model.IsDeleted,
+                        Phone = model.Phone,
+                        Salary = model.Salary
+
+
+                    };
+                    var count = _employeeRepository.Add(employee);
+                    if (count > 0)
+                    {
+                        TempData["Message"] = "Employee is Created ! !";
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                catch (Exception ex)
                 {
 
-               Name=model.Name,
-               Address = model.Address,
-                    Age = model.Age,
-                    CreateAt = model.CreateAt,
-                    HiringDate = model.HiringDate,
-                    Email = model.Email,
-                    IsActive = model.IsActive,
-                    IsDeleted = model.IsDeleted,
-                    Phone = model.Phone,
-                    Salary = model.Salary
+                    ModelState.AddModelError("", ex.Message);
 
-
-                };
-                var count = _employeeRepository.Add(employee);
-                if (count > 0)
-                {
-                    return RedirectToAction(nameof(Index));
                 }
             }
 
