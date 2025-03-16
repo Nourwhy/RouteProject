@@ -21,6 +21,10 @@ namespace RouteProject.PL.Controllers
         {
 
             var employees = _employeeRepository.GetAll();
+            //Dictionary :
+            //1.ViewData
+            //2.ViewBag
+        //3.TempDatadd
             return View(employees);
         }
         [HttpGet]
