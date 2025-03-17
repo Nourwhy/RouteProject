@@ -19,17 +19,22 @@ namespace RouteProject.PL.Controllers
             _departmentRepository = departmentRepository;
         }
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(string? SearchInput)
         {
+            IEnumerable<Employee> employees;
 
-            var employees = _employeeRepository.GetAll();
-            ////Dictionary : 3 propery
-            ////1.ViewData : Transfer Extra Information From Controller (Action) To View
-            //ViewData["Message"] = "Hello From ViewData";
-            ////2.ViewBag:Transfer Extra Information From Controller (Action) To View
-            //ViewBag.Message = new { Message = "Hello From ViewBag" };
+            if (string.IsNullOrEmpty(SearchInput))
+            {
+                employees = _employeeRepository.GetAll();
+            }
+            else
+            {
+                employees = _employeeRepository.GetByName(SearchInput);
+            }
+
             return View(employees);
         }
+
         [HttpGet]
         public IActionResult Create()
         {
