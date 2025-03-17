@@ -11,14 +11,14 @@ namespace RouteProject.PL.Controllers
     {
 
         private readonly IEmployeeRepository _employeeRepository;
-        private readonly IDepartmentRepository _departmentRepository;
+        //private readonly IDepartmentRepository _departmentRepository;
         private readonly IMapper _mapper;
 
-        public EmployeeController(IEmployeeRepository employeeRepository,IDepartmentRepository departmentRepository,IMapper mapper)
+        public EmployeeController(IEmployeeRepository employeeRepository,/*IDepartmentRepository departmentRepository,*/IMapper mapper)
 
         {
             _employeeRepository = employeeRepository;
-            _departmentRepository = departmentRepository;
+            //_departmentRepository = departmentRepository;
             _mapper = mapper;
         }
         [HttpGet]
@@ -41,8 +41,8 @@ namespace RouteProject.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var departments = _departmentRepository.GetAll();
-            ViewData["departments"]=departments;
+            //var departments = _departmentRepository.GetAll();
+            //ViewData["departments"]=departments;
             return View(new CreateEmployeeDto());
 
           
@@ -109,8 +109,8 @@ namespace RouteProject.PL.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            var departments = _departmentRepository.GetAll();
-            ViewData["departments"] = departments;
+            //var departments = _departmentRepository.GetAll();
+            //ViewData["departments"] = departments;
 
             if (id is null)
                 return BadRequest("Invalid Id");
@@ -137,8 +137,8 @@ namespace RouteProject.PL.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var departments = _departmentRepository.GetAll(); 
-                ViewData["departments"] = departments;
+                //var departments = _departmentRepository.GetAll(); 
+                //ViewData["departments"] = departments;
                 return View(model);
             }
 
@@ -158,8 +158,8 @@ namespace RouteProject.PL.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var departmentsList = _departmentRepository.GetAll(); 
-            ViewData["departments"] = departmentsList;
+            //var departmentsList = _departmentRepository.GetAll(); 
+            //ViewData["departments"] = departmentsList;
 
             return View(model);
         }

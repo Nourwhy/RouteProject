@@ -1,11 +1,11 @@
-﻿@using RouteProject.DAL.Models;
-@using RouteProject.PL.Dtos
+﻿
 @model CreateEmployeeDto
-
+@inject IDepartmentRepository _departmentrepo
 
 
 @{
-    var Departments = new SelectList(ViewData["departments"] as IEnumerable<Department>,"Id","Name");
+
+    var Departments = new SelectList   _departmentrepo.GetAll();,"Id","Name");
 
 }
 <input type="hidden" asp-for="Id" />
