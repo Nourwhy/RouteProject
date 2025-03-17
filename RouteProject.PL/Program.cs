@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using RouteProject.BLL.Interfaces;
 using RouteProject.BLL.Repositories;
 using RouteProject.DAL.Data.Contexts;
+using RouteProject.PL.Mapping;
 using RouteProject.PL.Services;
 
 namespace RouteProject.PL
@@ -19,8 +20,12 @@ namespace RouteProject.PL
             builder.Services.AddDbContext<CompanyDbContext>(options => {
 
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+
             
             }/*,ServiceLifetime.Singleton*/);
+
+            //builder.Services.AddAutoMapper(typeof(EmployeeProfile));
+            builder.Services.AddAutoMapper(M=>M.AddProfile(new EmployeeProfile()));
             //Life Time
             //builder.Services.AddScoped(); //Create Object Life Time Per Request -Unreachable Object
             //builder.Services.AddTransient(); //Create Object Life Time per Operation
