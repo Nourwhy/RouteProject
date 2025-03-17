@@ -10,11 +10,13 @@ namespace RouteProject.PL.Controllers
     {
 
         private readonly IEmployeeRepository _employeeRepository;
-   
-        public EmployeeController(IEmployeeRepository employeeRepository)
+        private readonly IDepartmentRepository _departmentRepository;
+
+        public EmployeeController(IEmployeeRepository employeeRepository,IDepartmentRepository departmentRepository)
 
         {
             _employeeRepository = employeeRepository;
+            _departmentRepository = departmentRepository;
         }
         [HttpGet]
         public IActionResult Index()
@@ -31,6 +33,8 @@ namespace RouteProject.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            var departments = _departmentRepository.GetAll();
+            ViewData["departments"]=departments;
             return View(new CreateEmployeeDto());
 
           
@@ -54,7 +58,8 @@ namespace RouteProject.PL.Controllers
                         IsActive = model.IsActive,
                         IsDeleted = model.IsDeleted,
                         Phone = model.Phone,
-                        Salary = model.Salary
+                        Salary = model.Salary,
+                        DepartmentId=model.DepartmentId
 
 
                     };
@@ -96,7 +101,8 @@ namespace RouteProject.PL.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-
+            var departments = _departmentRepository.GetAll();
+            ViewData["departments"] = departments;
             if (id is null)
                 return BadRequest("Invaild Id");
             var employee = _employeeRepository.Get(id.Value);
@@ -118,7 +124,9 @@ namespace RouteProject.PL.Controllers
                     IsActive = employee.IsActive,
                     IsDeleted = employee.IsDeleted,
                     Phone = employee.Phone,
-                    Salary = employee.Salary
+                    Salary = employee.Salary,
+                    DepartmentId=employee.DepartmentId
+
 
 
                 };
@@ -158,7 +166,7 @@ namespace RouteProject.PL.Controllers
             employee.IsDeleted = model.IsDeleted;
             employee.Phone = model.Phone;
             employee.Salary = model.Salary;
-
+            employee.DepartmentId= model.DepartmentId;
       
             var count = _employeeRepository.Update(employee);
             if (count > 0)
