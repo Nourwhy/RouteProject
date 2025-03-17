@@ -1,4 +1,5 @@
-﻿using RouteProject.BLL.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using RouteProject.BLL.Interfaces;
 using RouteProject.DAL.Data.Contexts;
 using RouteProject.DAL.Models;
 using System;
@@ -21,10 +22,9 @@ namespace RouteProject.BLL.Repositories
         public int Add(T model)
         {
             _context.Set<T>().Add(model);
-            Console.WriteLine($"Adding: {model}");
-            var result = _context.SaveChanges();
-            Console.WriteLine($"Rows affected: {result}");
-            return result;
+
+           return _context.SaveChanges();
+        
         }
 
         public int Delete(T model)
@@ -35,12 +35,17 @@ namespace RouteProject.BLL.Repositories
 
         public T? Get(int id)
         {
-            return _context.Set<T>().Find(id);
+            return _context.Employees.Include(E => E.Department).FirstOrDefault(E => E.Id == id) as T;
         }
 
         public IEnumerable<T> GetAll()
         {
-            return _context.Set<T>().ToList();
+            if (typeof(T) == typeof(Employee))
+            {
+                return(IEnumerable<T>) _context.Employees.Include(E => E.Department).ToList();
+            }
+                return _context.Set<T>().ToList();
+            
         }
 
         public int Update(T model)
