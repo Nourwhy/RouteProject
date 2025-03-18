@@ -1,4 +1,4 @@
-﻿@using RouteProject.DAL.Models
+﻿
 @model Employee
 
 <input type="hidden" asp-for="Id" />
@@ -59,5 +59,10 @@
 <div class="my-3">
     <label asp-for="CreateAt" class="col-form-label"></label>
     <input asp-for="CreateAt" type="date" class="form-control" readonly />
+
+</div>
+<div class="my-3">
+    <label asp-for="Department" class="col-form-label"></label>
+    <input asp-for="Department.Name" class="form-control" readonly />
 
 </div>
