@@ -10,14 +10,17 @@ namespace RouteProject.PL.Controllers
     public class EmployeeController : Controller
     {
 
-        private readonly IEmployeeRepository _employeeRepository;
+        //private readonly IEmployeeRepository _employeeRepository;
+        private readonly IUnitOfWork _unitOfWork;
+
         //private readonly IDepartmentRepository _departmentRepository;
         private readonly IMapper _mapper;
 
-        public EmployeeController(IEmployeeRepository employeeRepository,/*IDepartmentRepository departmentRepository,*/IMapper mapper)
+        public EmployeeController(IUnitOfWork unitOfWork,IMapper mapper)
 
         {
-            _employeeRepository = employeeRepository;
+            //_employeeRepository = employeeRepository;
+            _unitOfWork = unitOfWork;
             //_departmentRepository = departmentRepository;
             _mapper = mapper;
         }
@@ -28,11 +31,11 @@ namespace RouteProject.PL.Controllers
 
             if (string.IsNullOrEmpty(SearchInput))
             {
-                employees = _employeeRepository.GetAll();
+                employees = _unitOfWork.EmployeeRepository.GetAll();
             }
             else
             {
-                employees = _employeeRepository.GetByName(SearchInput);
+                employees = _unitOfWork.EmployeeRepository.GetByName(SearchInput);
             }
 
             return View(employees);
@@ -41,8 +44,8 @@ namespace RouteProject.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            //var departments = _departmentRepository.GetAll();
-            //ViewData["departments"]=departments;
+            var departments = _unitOfWork.DepartmentRepository.GetAll();
+            ViewData["departments"] = departments;
             return View(new CreateEmployeeDto());
 
           
@@ -72,7 +75,8 @@ namespace RouteProject.PL.Controllers
 
                     //};
                     var employee=_mapper.Map <Employee>(model);
-                    var count = _employeeRepository.Add(employee);
+                    _unitOfWork.EmployeeRepository.Add(employee);
+                    var count = _unitOfWork.Complete();
                     if (count > 0)
                     {
                         TempData["Message"] = "Employee is Created ! !";
@@ -95,7 +99,7 @@ namespace RouteProject.PL.Controllers
 
             if (id is null)
                 return BadRequest("Invaild Id");
-            var employee = _employeeRepository.Get(id.Value);
+            var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
 
 
             if (employee == null)
@@ -109,13 +113,13 @@ namespace RouteProject.PL.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            //var departments = _departmentRepository.GetAll();
-            //ViewData["departments"] = departments;
+            var departments = _unitOfWork.DepartmentRepository.GetAll();
+            ViewData["departments"] = departments;
 
             if (id is null)
                 return BadRequest("Invalid Id");
 
-            var employee = _employeeRepository.Get(id.Value);
+            var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
             if (employee is null)
             {
                 return NotFound(new
@@ -137,12 +141,12 @@ namespace RouteProject.PL.Controllers
         {
             if (!ModelState.IsValid)
             {
-                //var departments = _departmentRepository.GetAll(); 
-                //ViewData["departments"] = departments;
+                var departments = _unitOfWork.DepartmentRepository.GetAll();
+                ViewData["departments"] = departments;
                 return View(model);
             }
 
-            var employee = _employeeRepository.Get(id);
+            var employee = _unitOfWork.EmployeeRepository.Get(id);
             if (employee == null)
             {
                 return NotFound(new { statusCode = 404, message = $"Employee with Id : {id} not found" });
@@ -151,15 +155,16 @@ namespace RouteProject.PL.Controllers
        
             _mapper.Map(model, employee);
 
-            var count = _employeeRepository.Update(employee);
+          _unitOfWork.EmployeeRepository.Update(employee);
+            var count = _unitOfWork.Complete();
             if (count > 0)
             {
                 TempData["Message"] = "Employee updated successfully!"; 
                 return RedirectToAction(nameof(Index));
             }
 
-            //var departmentsList = _departmentRepository.GetAll(); 
-            //ViewData["departments"] = departmentsList;
+            var departmentsList = _unitOfWork.DepartmentRepository.GetAll();
+            ViewData["departments"] = departmentsList;
 
             return View(model);
         }
@@ -184,7 +189,8 @@ namespace RouteProject.PL.Controllers
             {
                 if (id !=   employee.Id)
                     return BadRequest();
-                var count = _employeeRepository.Delete(employee);
+                _unitOfWork.EmployeeRepository.Delete(employee);
+                var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
 

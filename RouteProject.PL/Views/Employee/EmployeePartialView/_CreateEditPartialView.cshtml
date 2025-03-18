@@ -1,13 +1,9 @@
 ﻿
 @model CreateEmployeeDto
-@inject IDepartmentRepository _departmentrepo
-
-
 @{
-
-    var Departments = new SelectList   _departmentrepo.GetAll();,"Id","Name");
-
+    var Departments = new SelectList(ViewData["departments"] as IEnumerable<Department>, "Id", "Name");
 }
+
 <input type="hidden" asp-for="Id" />
     <div class="my-3">
         <label asp-for="Name" class="col-form-label"></label>
