@@ -1,4 +1,5 @@
-﻿using RouteProject.BLL.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using RouteProject.BLL.Interfaces;
 using RouteProject.DAL.Data.Contexts;
 using RouteProject.DAL.Models;
 using System;
@@ -18,35 +19,44 @@ namespace RouteProject.BLL.Repositories
             _context = context;
         }
 
-        public int Add(T model)
+        public async  Task AddAsync(T model)
         {
-            _context.Set<T>().Add(model);
-            Console.WriteLine($"Adding: {model}");
-            var result = _context.SaveChanges();
-            Console.WriteLine($"Rows affected: {result}");
-            return result;
+            await _context.Set<T>().AddAsync(model);
+
+          
+        
         }
 
-        public int Delete(T model)
+        public void Delete(T model)
         {
             _context.Set<T>().Remove(model);
-            return _context.SaveChanges();
+      
         }
 
-        public T? Get(int id)
+        public async Task<T?> GetAsync(int id)
         {
-            return _context.Set<T>().Find(id);
+            if (typeof(T) == typeof(Employee))
+            {
+                return await _context.Employees.Include(E => E.Department).FirstOrDefaultAsync(E => E.Id == id) as T;
+            }
+
+            return _context.Set<T>().Find(id); 
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task< IEnumerable<T>> GetAllAsync()
         {
-            return _context.Set<T>().ToList();
+            if (typeof(T) == typeof(Employee))
+            {
+                return(IEnumerable<T>) await _context.Employees.Include(E => E.Department).ToListAsync();
+            }
+                return await _context.Set<T>().ToListAsync();
+            
         }
 
-        public int Update(T model)
+        public void Update(T model)
         {
             _context.Set<T>().Update(model);
-            return _context.SaveChanges();
+           
         }
     }
 }

@@ -9,15 +9,7 @@ namespace RouteProject.BLL.Interfaces
 {
     public interface IEmployeeRepository:IGenericRepository<Employee>
     {
-        //IEnumerable<Employee> GetAll();
+       Task< List<Employee>> GetByNameAsync(string name);
 
-
-
-
-        //Employee? Get(int id);
-
-        //int Add(Employee model);
-        //int Update(Employee model);
-        //int Delete(Employee model);
     }
 }
