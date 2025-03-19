@@ -5,6 +5,8 @@ using RouteProject.DAL.Models;
 using RouteProject.PL.Dtos;
 
 using AutoMapper;
+using RouteProject.PL.Helper;
+using Microsoft.IdentityModel.Abstractions;
 namespace RouteProject.PL.Controllers
 {
     public class EmployeeController : Controller
@@ -55,39 +57,23 @@ namespace RouteProject.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
+           
+                if (model.Image is not null)
                 {
-                    //var employee = new Employee()
-                    //{
-
-                    //    Name = model.Name,
-                    //    Address = model.Address,
-                    //    Age = model.Age,
-                    //    CreateAt = model.CreateAt,
-                    //    HiringDate = model.HiringDate,
-                    //    Email = model.Email,
-                    //    IsActive = model.IsActive,
-                    //    IsDeleted = model.IsDeleted,
-                    //    Phone = model.Phone,
-                    //    Salary = model.Salary,
-                    //    DepartmentId=model.DepartmentId
-
-
-                    //};
-                    var employee=_mapper.Map <Employee>(model);
-                    _unitOfWork.EmployeeRepository.Add(employee);
-                    var count = _unitOfWork.Complete();
-                    if (count > 0)
-                    {
-                        TempData["Message"] = "Employee is Created ! !";
-                        return RedirectToAction(nameof(Index));
-                    }
+                    string imageName = DocumentSettings.UploadFile(model.Image, "images");
+                    model.ImageName = imageName;
                 }
-                catch (Exception ex)
+
+              
+                var employee = _mapper.Map<Employee>(model);
+
+                _unitOfWork.EmployeeRepository.Add(employee);
+                var count = _unitOfWork.Complete();
+
+                if (count > 0)
                 {
-
-                    ModelState.AddModelError("", ex.Message);
-
+                    TempData["Message"] = "Employee is Created!";
+                    return RedirectToAction(nameof(Index));
                 }
             }
 
@@ -152,14 +138,33 @@ namespace RouteProject.PL.Controllers
                 return NotFound(new { statusCode = 404, message = $"Employee with Id : {id} not found" });
             }
 
-       
-            _mapper.Map(model, employee);
+          
+            if (model.Image != null && !string.IsNullOrEmpty(employee.ImageName))
+            {
+                DocumentSettings.DeleteFile(employee.ImageName, "images");
+            }
 
-          _unitOfWork.EmployeeRepository.Update(employee);
+           
+            if (model.Image != null)
+            {
+                string imageName = DocumentSettings.UploadFile(model.Image, "images");
+                model.ImageName = imageName;
+            }
+            else
+            {
+                model.ImageName = employee.ImageName;
+            }
+
+      
+            _mapper.Map(model, employee);
+            employee.Id = id;
+
+            _unitOfWork.EmployeeRepository.Update(employee);
             var count = _unitOfWork.Complete();
+
             if (count > 0)
             {
-                TempData["Message"] = "Employee updated successfully!"; 
+                TempData["Message"] = "Employee updated successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -168,8 +173,6 @@ namespace RouteProject.PL.Controllers
 
             return View(model);
         }
-
-
 
 
         [HttpGet]
@@ -182,25 +185,34 @@ namespace RouteProject.PL.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, Employee employee)
+        public IActionResult Delete(int id)
         {
 
-            if (ModelState.IsValid)
+            var employee = _unitOfWork.EmployeeRepository.Get(id);
+            if (employee == null)
             {
-                if (id !=   employee.Id)
-                    return BadRequest();
-                _unitOfWork.EmployeeRepository.Delete(employee);
-                var count = _unitOfWork.Complete();
-                if (count > 0)
-                {
-
-                    return RedirectToAction(nameof(Index));
-                }
-
+                return NotFound(new { statusCode = 404, message = $"Employee with Id: {id} not found" });
             }
-            return View(employee);
 
+            if (!string.IsNullOrEmpty(employee.ImageName))
+            {
+                DocumentSettings.DeleteFile(employee.ImageName, "images");
+            }
+
+         
+            _unitOfWork.EmployeeRepository.Delete(employee);
+            var count = _unitOfWork.Complete();
+
+            if (count > 0)
+            {
+                TempData["Message"] = "Employee deleted successfully!";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View("Delete", employee);
         }
 
     }
+
+    
 }

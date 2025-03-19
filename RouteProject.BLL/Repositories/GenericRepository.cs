@@ -33,9 +33,14 @@ namespace RouteProject.BLL.Repositories
       
         }
 
-        public T? Get(int id)
+        public T Get(int id)
         {
-            return _context.Employees.Include(E => E.Department).FirstOrDefault(E => E.Id == id) as T;
+            if (typeof(T) == typeof(Employee))
+            {
+                return _context.Employees.Include(E => E.Department).FirstOrDefault(E => E.Id == id) as T;
+            }
+
+            return _context.Set<T>().Find(id); 
         }
 
         public IEnumerable<T> GetAll()
