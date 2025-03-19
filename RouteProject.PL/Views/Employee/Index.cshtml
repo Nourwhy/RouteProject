@@ -1,14 +1,49 @@
-﻿@using RouteProject.DAL.Models
+﻿
 @model IEnumerable<Employee>
 @{
     ViewData["Title"] = "Index";
+    // ViewData["Message"];
+    string? ViewDataMessage= ViewData["Message"]as string;
+    // string? ViewMessage= ViewData["Message"]as string;
 }
 
 <h1>All Employee</h1>
 <br />
 <br />
+@* <div class="m-3 alert alert-danger">
+    @* <p>@ViewData["Message"]</p> *@
+@*  <p>@ViewBag.Message</p>
+</div> *@ 
+
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{ 
+    <div class="m-3 alert alert-info" >
+        <p>@TempData["Message"]</p>
+
+
+    </div>
+
+}
+<form>
+    <div class="container m-4 ">
+        <div class="row justify-content-center d-flex">
+    <div class="col-6">
+
+        <input placeholder="Search By Name" name="SearchInput" class="form-control" />
+  </div>
+            <div class="col-6">
+        <input type="submit" value="Search" class="btn btn-success" />
+     
+    </div>
+    </div>
+    </div>
+
+</form>
+<br />
+<br />
 
 <a asp-action="Create" asp-controller="Employee" class="btn btn-primary">Create Employee</a>
+
 <br />
 <br />
 
@@ -18,6 +53,7 @@
     <table class="table table-hover table-striped">
         <thead>
             <tr>
+                <th>Image</th>
                 <th>Name</th>
                 <th>Age</th>
                 <th>Email</th>
@@ -28,6 +64,7 @@
                 <th>IsDeleted</th>
                 <th>@Html.DisplayNameFor(E=>E.HiringDate)</th>
                 <th>@Html.DisplayNameFor(E=>E.CreateAt)</th>
+                <th>Department</th>
                 <th>Details</th>
                 <th>Update</th>
                 <th>Delete</th>
@@ -37,6 +74,16 @@
             @foreach (var item in Model)
             {
                 <tr>
+                    <td>
+                        <img src="~/images/@item.ImageName" width="100%" class="img-fluid rounded-circle" />
+
+
+
+                        
+                    </td>
+
+
+
                     <td>@item.Name</td>
                     <td>@item.Age</td>
                     <td>@item.Email</td>
@@ -47,6 +94,13 @@
                     <td>@item.IsDeleted </td>
                     <td>@item.HiringDate</td>
                     <td>@item.CreateAt</td>
+                    @if (item.Department is null)
+                    {
+                        <td>No Department</td>
+                    }
+                    else { 
+                    <td>@item.Department.Name</td>
+                    }
 
                     <partial name="_ButtonPartialView" model="@item.Id" />
 

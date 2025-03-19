@@ -1,4 +1,5 @@
-﻿using RouteProject.BLL.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using RouteProject.BLL.Interfaces;
 using RouteProject.DAL.Data.Contexts;
 using RouteProject.DAL.Models;
 using System;
@@ -11,42 +12,18 @@ namespace RouteProject.BLL.Repositories
 {
     public class EmployeeRepository : GenericRepository<Employee>,IEmployeeRepository
     {
-        public EmployeeRepository(CompanyDbContext context) : base(context)//ASK CLR Create object from CompanyDbContext
+        private readonly CompanyDbContext _context;
+        public EmployeeRepository(CompanyDbContext context) : base(context)
         {
+            this._context = context;
 
         }
-        //private readonly CompanyDbContext _context;
-        //public EmployeeRepository(CompanyDbContext context)
-        //{
-        //    _context = context;
-        //}
-        //public int Add(Employee model)
-        //{
 
-        //    _context.Employees.Add(model);
-        //    return _context.SaveChanges();
-        //}
+        public List<Employee> GetByName(string name)
+        {
 
-        //public int Delete(Employee model)
-        //{
-        //    _context.Employees.Remove(model);
-        //    return _context.SaveChanges();
-        //}
+           return _context.Employees.Include(E=>E.Department).Where(E => E.Name.ToLower().Contains(name.ToLower())).ToList();
 
-        //public Employee ?Get(int id)
-        //{
-        //    return _context.Employees.Find(id);
-        //}
-
-        //public IEnumerable<Employee> GetAll()
-        //{
-        //    return _context.Employees.ToList();
-        //}
-
-        //public int Update(Employee model)
-        //{
-        //    _context.Employees.Update(model);
-        //    return _context.SaveChanges();
-        //}
+        }
     }
 }
