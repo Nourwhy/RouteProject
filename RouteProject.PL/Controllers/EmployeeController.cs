@@ -27,33 +27,33 @@ namespace RouteProject.PL.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public IActionResult Index(string? SearchInput)
+        public  async Task<IActionResult> Index(string? SearchInput)
         {
             IEnumerable<Employee> employees;
 
             if (string.IsNullOrEmpty(SearchInput))
             {
-                employees = _unitOfWork.EmployeeRepository.GetAll();
+                employees = await _unitOfWork.EmployeeRepository.GetAllAsync();
             }
             else
             {
-                employees = _unitOfWork.EmployeeRepository.GetByName(SearchInput);
+                employees =  await _unitOfWork.EmployeeRepository.GetByNameAsync(SearchInput);
             }
 
             return View(employees);
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var departments = _unitOfWork.DepartmentRepository.GetAll();
+            var departments =await _unitOfWork.DepartmentRepository.GetAllAsync();
             ViewData["departments"] = departments;
             return View(new CreateEmployeeDto());
 
           
         }
         [HttpPost]
-        public IActionResult Create(CreateEmployeeDto model)
+        public async Task<IActionResult> Create(CreateEmployeeDto model)
         {
             if (ModelState.IsValid)
             {
@@ -67,8 +67,8 @@ namespace RouteProject.PL.Controllers
               
                 var employee = _mapper.Map<Employee>(model);
 
-                _unitOfWork.EmployeeRepository.Add(employee);
-                var count = _unitOfWork.Complete();
+                await _unitOfWork.EmployeeRepository.AddAsync(employee);
+                var count = await  _unitOfWork.CompleteAsync();
 
                 if (count > 0)
                 {
@@ -80,12 +80,25 @@ namespace RouteProject.PL.Controllers
             return View(model);
         }
         [HttpGet]
-        public IActionResult Details(int? id, string viewName = "Details")
+        public async Task<IActionResult> Details(int? id, string viewName = "Details")
         {
 
             if (id is null)
                 return BadRequest("Invaild Id");
-            var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
+            var employee = 
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                await _unitOfWork.EmployeeRepository.GetAsync(id.Value);
 
 
             if (employee == null)
@@ -97,15 +110,15 @@ namespace RouteProject.PL.Controllers
             return View(viewName, employee);
         }
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            var departments = _unitOfWork.DepartmentRepository.GetAll();
+            var departments = await  _unitOfWork.DepartmentRepository.GetAllAsync();
             ViewData["departments"] = departments;
 
             if (id is null)
                 return BadRequest("Invalid Id");
 
-            var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
+            var employee = await _unitOfWork.EmployeeRepository.GetAsync(id.Value);
             if (employee is null)
             {
                 return NotFound(new
@@ -123,16 +136,16 @@ namespace RouteProject.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, CreateEmployeeDto model)
+        public async Task< IActionResult> Edit(int id, CreateEmployeeDto model)
         {
             if (!ModelState.IsValid)
             {
-                var departments = _unitOfWork.DepartmentRepository.GetAll();
+                var departments = _unitOfWork.DepartmentRepository.GetAllAsync();
                 ViewData["departments"] = departments;
                 return View(model);
             }
 
-            var employee = _unitOfWork.EmployeeRepository.Get(id);
+            var employee = await _unitOfWork.EmployeeRepository.GetAsync(id);
             if (employee == null)
             {
                 return NotFound(new { statusCode = 404, message = $"Employee with Id : {id} not found" });
@@ -160,7 +173,7 @@ namespace RouteProject.PL.Controllers
             employee.Id = id;
 
             _unitOfWork.EmployeeRepository.Update(employee);
-            var count = _unitOfWork.Complete();
+            var count = await _unitOfWork.CompleteAsync();
 
             if (count > 0)
             {
@@ -168,7 +181,7 @@ namespace RouteProject.PL.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var departmentsList = _unitOfWork.DepartmentRepository.GetAll();
+            var departmentsList = await _unitOfWork.DepartmentRepository.GetAllAsync();
             ViewData["departments"] = departmentsList;
 
             return View(model);
@@ -176,7 +189,7 @@ namespace RouteProject.PL.Controllers
 
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public Task<IActionResult >Delete(int? id)
         { 
 
 
@@ -185,10 +198,10 @@ namespace RouteProject.PL.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
 
-            var employee = _unitOfWork.EmployeeRepository.Get(id);
+            var employee = await  _unitOfWork.EmployeeRepository.GetAsync(id);
             if (employee == null)
             {
                 return NotFound(new { statusCode = 404, message = $"Employee with Id: {id} not found" });
@@ -201,7 +214,7 @@ namespace RouteProject.PL.Controllers
 
          
             _unitOfWork.EmployeeRepository.Delete(employee);
-            var count = _unitOfWork.Complete();
+            var count = await _unitOfWork.CompleteAsync();
 
             if (count > 0)
             {
@@ -216,3 +229,10 @@ namespace RouteProject.PL.Controllers
 
     
 }
+
+
+
+
+
+
+

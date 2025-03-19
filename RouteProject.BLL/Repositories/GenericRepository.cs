@@ -19,9 +19,9 @@ namespace RouteProject.BLL.Repositories
             _context = context;
         }
 
-        public void Add(T model)
+        public async  Task AddAsync(T model)
         {
-            _context.Set<T>().Add(model);
+            await _context.Set<T>().AddAsync(model);
 
           
         
@@ -33,23 +33,23 @@ namespace RouteProject.BLL.Repositories
       
         }
 
-        public T Get(int id)
+        public async Task<T?> GetAsync(int id)
         {
             if (typeof(T) == typeof(Employee))
             {
-                return _context.Employees.Include(E => E.Department).FirstOrDefault(E => E.Id == id) as T;
+                return await _context.Employees.Include(E => E.Department).FirstOrDefaultAsync(E => E.Id == id) as T;
             }
 
             return _context.Set<T>().Find(id); 
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task< IEnumerable<T>> GetAllAsync()
         {
             if (typeof(T) == typeof(Employee))
             {
-                return(IEnumerable<T>) _context.Employees.Include(E => E.Department).ToList();
+                return(IEnumerable<T>) await _context.Employees.Include(E => E.Department).ToListAsync();
             }
-                return _context.Set<T>().ToList();
+                return await _context.Set<T>().ToListAsync();
             
         }
 

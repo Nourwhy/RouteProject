@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace RouteProject.BLL.Interfaces
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork :IAsyncDisposable
     {
 
          IDepartmentRepository DepartmentRepository { get;  }
          IEmployeeRepository EmployeeRepository { get; }
 
-        int Complete();
-        void Dispose();
+        Task<int> CompleteAsync();
+       
 
     }
 }
