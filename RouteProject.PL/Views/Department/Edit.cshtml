@@ -1,5 +1,4 @@
-﻿@using RouteProject.PL.Dtos
-
+﻿
 @model CreateDepartmentDto
 @{
     ViewData["Title"] = "Edit";
@@ -11,7 +10,6 @@
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" />
     <partial name="DepartmentPartialView/_CreateEditPartialView" />
-
 
 <div class="mt-4">
    <input type="submit" value="Save" class="btn btn-warning"/>
