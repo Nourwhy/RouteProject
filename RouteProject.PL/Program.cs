@@ -31,6 +31,17 @@ namespace RouteProject.PL
             builder.Services.AddAutoMapper(M=>M.AddProfile(new EmployeeProfile()));
             builder.Services.AddIdentity<AppUser, IdentityRole>()
                             .AddEntityFrameworkStores<CompanyDbContext>();
+
+
+            builder.Services.ConfigureApplicationCookie(config =>
+            {
+
+                config.LoginPath = "/Account/SignIn";
+                
+            
+            
+            }
+                );
             //Life Time
             //builder.Services.AddScoped(); //Create Object Life Time Per Request -Unreachable Object
             //builder.Services.AddTransient(); //Create Object Life Time per Operation
@@ -54,8 +65,10 @@ namespace RouteProject.PL
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            
             app.UseRouting();
-
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",

@@ -1,11 +1,13 @@
 using System.Diagnostics;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RouteProject.PL.Models;
 using RouteProject.PL.Services;
 
 namespace RouteProject.PL.Controllers;
 
+[Authorize]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;

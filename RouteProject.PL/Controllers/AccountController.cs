@@ -10,10 +10,12 @@ namespace RouteProject.PL.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public AccountController(UserManager<AppUser> userManager)
+        public AccountController(UserManager<AppUser> userManager,SignInManager<AppUser> signInManager )
         {
             _userManager = userManager;
+            _signInManager = signInManager;
         }
         #region SignUp
 
@@ -81,28 +83,33 @@ namespace RouteProject.PL.Controllers
 
         [HttpPost]
 
-        public async Task< IActionResult> SignIn(SignInDto model)
+        [HttpPost]
+        public async Task<IActionResult> SignIn(SignInDto model)
         {
-            if (ModelState.IsValid)//Server Side Validation
+            if (ModelState.IsValid) // Server-side validation
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user is null)
+
+                if (user is not null) 
                 {
                     var flag = await _userManager.CheckPasswordAsync(user, model.Password);
+
                     if (flag)
                     {
-
-                        return RedirectToAction(nameof(HomeController.Index));
+                        var result= await _signInManager.PasswordSignInAsync(user, model.Password,false,false);
+                        if (result.Succeeded)
+                        {
+                            return RedirectToAction(nameof(HomeController.Index), "Home");
+                        }
                     }
-
                 }
-                ModelState.AddModelError("", "Invalid SignIn! !");
+
+                ModelState.AddModelError("", "Invalid SignIn!");
             }
 
-                return View();
-
-
+            return View();
         }
+
 
         #endregion
 

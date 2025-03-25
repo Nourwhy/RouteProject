@@ -7,8 +7,10 @@ using RouteProject.PL.Dtos;
 using AutoMapper;
 using RouteProject.PL.Helper;
 using Microsoft.IdentityModel.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 namespace RouteProject.PL.Controllers
 {
+    [Authorize]
     public class EmployeeController : Controller
     {
 
