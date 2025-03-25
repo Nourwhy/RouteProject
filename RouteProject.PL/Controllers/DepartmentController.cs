@@ -10,18 +10,21 @@ namespace RouteProject.PL.Controllers
     //MVC Controller
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentRepository _departmentRepository;
+        //private readonly IDepartmentRepository _departmentRepository;
+        private readonly IUnitOfWork _unitOfWork;
+
         //ASK CKR TO CREATE object From DepartmentRepository 
-        public DepartmentController(IDepartmentRepository departmentRepository)
+        public DepartmentController(IUnitOfWork unitOfWork)
 
         {
-            _departmentRepository = departmentRepository;
+            //_departmentRepository = departmentRepository;
+            _unitOfWork = unitOfWork;
         }
         [HttpGet]// GET : /Department/Index
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
 
-            var departments = _departmentRepository.GetAll();
+            var departments =await _unitOfWork.DepartmentRepository.GetAllAsync();
             return View(departments);
         }
         [HttpGet]
@@ -31,7 +34,7 @@ namespace RouteProject.PL.Controllers
             return View(new CreateDepartmentDto());
         }
         [HttpPost]
-        public IActionResult Create(CreateDepartmentDto model)
+        public async Task< IActionResult> Create(CreateDepartmentDto model)
         {
             if (ModelState.IsValid) //Server Side
             {
@@ -44,7 +47,8 @@ namespace RouteProject.PL.Controllers
 
 
                 };
-                var count = _departmentRepository.Add(department);
+                await   _unitOfWork.DepartmentRepository.AddAsync(department);
+                var count = await _unitOfWork.CompleteAsync();
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
@@ -54,12 +58,12 @@ namespace RouteProject.PL.Controllers
             return View();
         }
         [HttpGet]
-        public IActionResult Details(int? id,string viewName="Details")
+        public async Task<IActionResult> Details(int? id,string viewName="Details")
         {
 
             if (id is null)
                 return BadRequest("Invaild Id");//400
-            var department = _departmentRepository.Get(id.Value);
+            var department  = await _unitOfWork.DepartmentRepository.GetAsync(id.Value);
 
 
             if (department == null)
@@ -72,12 +76,12 @@ namespace RouteProject.PL.Controllers
             return View(viewName,department);
         }
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async  Task<IActionResult> Edit(int? id)
         {
             if (id is null)
                 return BadRequest("Invalid Id");
 
-            var department = _departmentRepository.Get(id.Value);
+            var department = await _unitOfWork.DepartmentRepository.GetAsync(id.Value);
             if (department is null)
                 return NotFound(new { statusCode = 404, message = $"Department with Id : {id} not found" });
 
@@ -94,37 +98,40 @@ namespace RouteProject.PL.Controllers
         }
 
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, CreateDepartmentDto model)
+        public async Task<IActionResult> Edit(int id, CreateDepartmentDto model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-     
-            var department = _departmentRepository.Get(id);
+            var department = await _unitOfWork.DepartmentRepository.GetAsync(id);
             if (department == null)
             {
-                return NotFound(new { statusCode = 404, message = $"Department with Id : {id} not found" });
+                return NotFound(new { statusCode = 404, message = $"Department with Id: {id} not found" });
             }
 
-        
             department.Code = model.Code;
             department.Name = model.Name;
             department.CreateAt = model.CreateAt;
 
-        
-            var count = _departmentRepository.Update(department);
+            _unitOfWork.DepartmentRepository.Update(department);
+
+         
+            var count = await _unitOfWork.CompleteAsync();
+
             if (count > 0)
             {
+                TempData["Message"] = "Department updated successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
+            ModelState.AddModelError("", "Something went wrong while updating the department.");
             return View(model);
         }
+
 
 
         //[HttpPost]
@@ -152,7 +159,7 @@ namespace RouteProject.PL.Controllers
         //    return View(model);
 
         [HttpGet]
-            public IActionResult Delete(int? id)
+            public Task<IActionResult> Delete(int? id)
             {
 
                 //if (id is null)
@@ -172,23 +179,29 @@ namespace RouteProject.PL.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, Department department)
+        public async Task<IActionResult> Delete(int id)
         {
-
-            if (ModelState.IsValid)
+            var department =  await _unitOfWork.DepartmentRepository.GetAsync(id);
+            if (department == null)
             {
-                if (id != department.Id)
-                    return BadRequest();
-                var count = _departmentRepository.Delete(department);
-                if (count > 0)
-                {
-
-                    return RedirectToAction(nameof(Index));
-                }
-
+                return NotFound(new { statusCode = 404, message = $"Department with Id: {id} not found" });
             }
-            return View(department);
 
+            _unitOfWork.DepartmentRepository.Delete(department);
+
+         
+            var count = await _unitOfWork.CompleteAsync();
+
+            if (count > 0)
+            {
+                TempData["Message"] = "Department deleted successfully!";
+                return RedirectToAction(nameof(Index));
+            }
+
+            ModelState.AddModelError("", "Something went wrong while deleting the department.");
+            return View("Delete", department);
         }
-        }
+
+
     }
+}

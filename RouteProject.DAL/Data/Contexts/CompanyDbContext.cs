@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using RouteProject.DAL.Models;
 using System;
 using System.CodeDom;
@@ -11,7 +13,7 @@ using System.Threading.Tasks;
 namespace RouteProject.DAL.Data.Contexts
 {
 
-    public class CompanyDbContext : DbContext
+    public class CompanyDbContext : IdentityDbContext<AppUser>
     {
         //CLR
         public CompanyDbContext(DbContextOptions<CompanyDbContext> options):base(options)
@@ -30,5 +32,6 @@ namespace RouteProject.DAL.Data.Contexts
         
         public DbSet<Department> Departments { get; set; } 
         public DbSet<Employee> Employees { get; set; }
+  
     }
 }
