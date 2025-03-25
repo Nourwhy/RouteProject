@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RouteProject.BLL.Interfaces;
 using RouteProject.BLL.Repositories;
 using RouteProject.DAL.Data.Contexts;
+using RouteProject.DAL.Models;
 using RouteProject.PL.Mapping;
 using RouteProject.PL.Services;
 
@@ -27,6 +29,8 @@ namespace RouteProject.PL
 
             //builder.Services.AddAutoMapper(typeof(EmployeeProfile));
             builder.Services.AddAutoMapper(M=>M.AddProfile(new EmployeeProfile()));
+            builder.Services.AddIdentity<AppUser, IdentityRole>()
+                            .AddEntityFrameworkStores<CompanyDbContext>();
             //Life Time
             //builder.Services.AddScoped(); //Create Object Life Time Per Request -Unreachable Object
             //builder.Services.AddTransient(); //Create Object Life Time per Operation
