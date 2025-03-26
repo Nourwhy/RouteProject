@@ -30,7 +30,8 @@ namespace RouteProject.PL
             //builder.Services.AddAutoMapper(typeof(EmployeeProfile));
             builder.Services.AddAutoMapper(M=>M.AddProfile(new EmployeeProfile()));
             builder.Services.AddIdentity<AppUser, IdentityRole>()
-                            .AddEntityFrameworkStores<CompanyDbContext>();
+                            .AddEntityFrameworkStores<CompanyDbContext>()
+                            .AddDefaultTokenProviders();
 
 
             builder.Services.ConfigureApplicationCookie(config =>

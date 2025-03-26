@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using RouteProject.DAL.Models;
 using RouteProject.PL.Dtos;
+using RouteProject.PL.Helper;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RouteProject.PL.Controllers
@@ -124,6 +125,62 @@ namespace RouteProject.PL.Controllers
         }
         #endregion
 
+        #region Forget Password 
+        [HttpGet("ForgetPassword")]
+        public IActionResult ForgetPassword()
+        {
+            return View();
 
+        }
+        [HttpPost("SentResetPasswordUrl")]
+        public async Task<IActionResult> SentResetPasswordUrl(ForgetPasswordDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email); 
+
+                if (user is not null)
+                {
+                    // Generate Token
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                    // Create URL
+                    var url = Url.Action("ResetPassword", "Account", new { email = model.Email, token }, Request.Scheme);
+
+                    // Create email
+                    var email = new Email()
+                    {
+                        To = model.Email,
+                        Subject = "Reset Password",
+                        Body = url
+                    };
+
+                    // Send Email
+                    var flag = EmailSettings.SendEmail(email);
+                    if (flag)
+                    {
+                        return RedirectToAction("CheckYourInbox");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"User with email {model.Email} not found."); 
+                }
+            }
+
+            ModelState.AddModelError("", "Invalid Reset Password Operation !!");
+            return View("ForgetPassword");
+        }
+
+        [HttpGet("CheckYourInbox")]
+        public IActionResult CheckYourInbox()
+        {
+            return View();
+        }
     }
+
+    #endregion
+
+
+
 }
