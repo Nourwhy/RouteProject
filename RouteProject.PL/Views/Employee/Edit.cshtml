@@ -1,4 +1,4 @@
-﻿@using RouteProject.PL.Dtos
+﻿
 
 @model CreateEmployeeDto
 
@@ -9,10 +9,12 @@
 <h1>Edit Employee</h1>
 <br />
 <br />
-<form asp-action="Edit">
+<form asp-action="Edit" enctype="multipart/form-data">
     <input type="hidden" asp-for="Id" />
 
     <partial name="EmployeePartialView/_CreateEditPartialView" />
+    <input asp-for="ImageName" hidden />
+
     <div class="mt-4">
         <input type="submit" value="Save" class="btn btn-warning" />
         <a asp-action="Index" class="btn btn-secondary">Back to List</a>
