@@ -49,27 +49,27 @@ namespace RouteProject.PL
             }
                 );
           
-            builder.Services.AddAuthentication(o =>
-            {
-                o.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
-                o.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            })
-            .AddGoogle(o =>
-            {
-                o.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-                o.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-            });
+            //builder.Services.AddAuthentication(o =>
+            //{
+            //    o.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+            //    o.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            //})
+            //.AddGoogle(o =>
+            //{
+            //    o.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+            //    o.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+            //});
 
-            builder.Services.AddAuthentication(f =>
-            {
-                f.DefaultAuthenticateScheme = FacebookDefaults.AuthenticationScheme;
-                f.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
-            })
-            .AddFacebook(f =>
-            {
-                f.ClientId = builder.Configuration["Authentication:Facebook:ClientId"];
-                f.ClientSecret = builder.Configuration["Authentication:Facebook:ClientSecret"];
-            });
+            //builder.Services.AddAuthentication(f =>
+            //{
+            //    f.DefaultAuthenticateScheme = FacebookDefaults.AuthenticationScheme;
+            //    f.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
+            //})
+            //.AddFacebook(f =>
+            //{
+            //    f.ClientId = builder.Configuration["Authentication:Facebook:ClientId"];
+            //    f.ClientSecret = builder.Configuration["Authentication:Facebook:ClientSecret"];
+            //});
 
             //Life Time
             //builder.Services.AddScoped(); //Create Object Life Time Per Request -Unreachable Object
