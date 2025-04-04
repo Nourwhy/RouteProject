@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using RouteProject.DAL.Models;
@@ -233,9 +236,75 @@ namespace RouteProject.PL.Controllers
                 return View();
             }
 
-            #endregion
+        #endregion
+        public IActionResult GoogleLogin()
+        {
+            var prop = new AuthenticationProperties()
+            {
+                RedirectUri = Url.Action("GoogleResponse")
 
+
+            };
+            return Challenge(prop, GoogleDefaults.AuthenticationScheme);
 
         }
-    
+
+        public async Task<IActionResult> GoogleResponse()
+        {
+
+            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+            var cliams = result.Principal.Identities.FirstOrDefault().Claims.Select(
+                claim => new
+                {
+                    claim.Type,
+                    claim.Value,
+                    claim.Issuer,
+                    claim.OriginalIssuer
+
+
+
+                }
+
+
+                );
+            return RedirectToAction("Index", "Home");
+
+        }
+        public IActionResult FacebookLogin()
+        {
+            var prop = new AuthenticationProperties()
+            {
+                RedirectUri = Url.Action("FacebookResponse")
+
+
+            };
+            return Challenge(prop, FacebookDefaults.AuthenticationScheme);
+
+        }
+
+        public async Task<IActionResult> FacebookResponse()
+        {
+
+            var result = await HttpContext.AuthenticateAsync(FacebookDefaults.AuthenticationScheme);
+            var cliams = result.Principal.Identities.FirstOrDefault().Claims.Select(
+                claim => new
+                {
+                    claim.Type,
+                    claim.Value,
+                    claim.Issuer,
+                    claim.OriginalIssuer
+
+
+
+                }
+
+
+                );
+            return RedirectToAction("Index", "Home");
+
+        }
+    }
+
 }
+
+       
