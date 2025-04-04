@@ -9,7 +9,7 @@ using RouteProject.PL.Dtos;
 namespace RouteProject.PL.Controllers
 {
     //MVC Controller
-    [Authorize]
+
     public class DepartmentController : Controller
     {
         //private readonly IDepartmentRepository _departmentRepository;
@@ -181,6 +181,7 @@ namespace RouteProject.PL.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var department =  await _unitOfWork.DepartmentRepository.GetAsync(id);

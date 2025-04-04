@@ -126,6 +126,12 @@ namespace RouteProject.PL.Controllers
         }
         #endregion
 
+        public IActionResult AccessDenied()
+        {
+            return View();
+        
+        }
+
         #region Forget Password 
         [HttpGet("ForgetPassword")]
         public IActionResult ForgetPassword()

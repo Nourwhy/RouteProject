@@ -44,6 +44,23 @@ namespace RouteProject.PL.Controllers
 
             return View(employees);
         }
+        [HttpGet]
+        public async Task<IActionResult> Search(string? SearchInput)
+        {
+            Console.WriteLine("SearchInput: " + SearchInput); // <- this
+            if (string.IsNullOrWhiteSpace(SearchInput))
+            {
+                return PartialView("EmployeePartialView/EmployeeTablePartialView", new List<Employee>());
+            }
+
+            var employees = await _unitOfWork.EmployeeRepository.GetByNameAsync(SearchInput);
+
+            Console.WriteLine("Results Count: " + employees.Count); // <- this
+
+            return PartialView("EmployeePartialView/EmployeeTablePartialView", employees);
+        }
+
+
 
         [HttpGet]
         public async Task<IActionResult> Create()

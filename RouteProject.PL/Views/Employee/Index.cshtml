@@ -29,7 +29,7 @@
         <div class="row justify-content-center d-flex">
     <div class="col-6">
 
-        <input placeholder="Search By Name" name="SearchInput" class="form-control" />
+                <input id="searchInp" placeholder="Search By Name" name="SearchInput" class="form-control" />
   </div>
             <div class="col-6">
         <input type="submit" value="Search" class="btn btn-success" />
@@ -125,3 +125,38 @@ else
 
     </div>
 }
+    
+    <script>
+      let debounceTimer;
+
+      $('#searchInp').on('keyup', function (e) {
+          e.preventDefault(); 
+
+          clearTimeout(debounceTimer);
+          let searchValue = $(this).val().trim();
+
+          debounceTimer = setTimeout(function () {
+              $.ajax({
+                  url: '@Url.Action("Search", "Employee")',
+                  type: 'GET',
+                  data: { SearchInput: searchValue },
+                  success: function (result) {
+                      $('table tbody').html(result); 
+                  },
+                  error: function (xhr, status, error) {
+                      console.error('AJAX Error:', error);
+                      console.log(xhr.responseText);
+                  }
+              });
+          }, 500);
+      });
+
+      $('form').on('submit', function (e) {
+          e.preventDefault(); 
+      });
+</script>
+
+
+
+
+
