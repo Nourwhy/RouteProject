@@ -1,11 +1,14 @@
+using MailKit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RouteProject.BLL.Interfaces;
 using RouteProject.BLL.Repositories;
 using RouteProject.DAL.Data.Contexts;
 using RouteProject.DAL.Models;
+using RouteProject.PL.Helper;
 using RouteProject.PL.Mapping;
 using RouteProject.PL.Services;
+using RouteProject.PL.Settings;
 
 namespace RouteProject.PL
 {
@@ -52,6 +55,8 @@ namespace RouteProject.PL
             builder.Services.AddTransient<ITransetService, Transet>();//Per Operation
             builder.Services.AddSingleton<ISingletonService,Singleton>();//PerApp
             builder.Services.AddControllersWithViews();
+            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
+            builder.Services.AddScoped<IMailServices, MailServices>();
 
             var app = builder.Build();
 

@@ -12,6 +12,7 @@ namespace RouteProject.PL.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IMailServices _mailServices;
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
@@ -184,40 +185,51 @@ namespace RouteProject.PL.Controllers
         #region Reset Password
 
         [HttpGet]
-        public IActionResult ResetPassword(string email,string token)
+        public IActionResult ResetPassword(string email, string token)
         {
             TempData["email"] = email;
             TempData["token"] = token;
             return View();
-
         }
-        [HttpPost]
-        public async Task<IActionResult> ResetPassword(ResetPasswordDto model)
-        {
-
-            if (ModelState.IsValid)
+            [HttpPost]
+            public async Task<IActionResult> ResetPassword(ResetPasswordDto model)
             {
-                var email = TempData["email"] as string;
-                var token = TempData["token"] as string;
-
-                if (email is null || token is null) return BadRequest("Invalid Operations");
-                var user = await _userManager.FindByEmailAsync(email);
-                if (user is not null)
+                if (ModelState.IsValid)
                 {
-                    var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
-                    if (result.Succeeded)
+                    var email = TempData["email"] as string;
+                    var token = TempData["token"] as string;
+
+                    if (email is null || token is null) return BadRequest("Invalid Operations");
+
+                    var user = await _userManager.FindByEmailAsync(email);
+
+                    if (user is not null)
                     {
-                        return RedirectToAction("SignIn");
+                        var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+                        if (result.Succeeded)
+                        {
+                            var emailObj = new Email
+                            {
+                                To = email,
+                                Subject = "Password Reset Successful",
+                                Body = "Your password has been successfully reset."
+                            };
+
+                            _mailServices.SendEmail(emailObj);
+
+                            return RedirectToAction("SignIn");
+                        }
                     }
 
+                    ModelState.AddModelError("", "Invalid Reset Password Operations!!");
                 }
-                ModelState.AddModelError("", "Invalid Reset Password Operatons  !!");
+
+                return View();
             }
-            return View();
+
+            #endregion
+
 
         }
-        #endregion
-
-
-    }
+    
 }
