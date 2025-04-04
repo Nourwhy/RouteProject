@@ -85,6 +85,13 @@ namespace RouteProject.PL
 
             var app = builder.Build();
 
+            app.UseHttpsRedirection();  
+            app.UseHsts();             
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
