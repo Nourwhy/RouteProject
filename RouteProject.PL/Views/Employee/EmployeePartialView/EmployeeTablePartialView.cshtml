@@ -1,0 +1,24 @@
+﻿@model IEnumerable<Employee>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            <img src="~/images/@item.ImageName" width="100%" class="img-fluid rounded-circle" />
+        </td>
+        <td>@item.Name</td>
+        <td>@item.Age</td>
+        <td>@item.Email</td>
+        <td>@item.Address</td>
+        <td>@item.Phone</td>
+        <td>@item.Salary</td>
+        <td>@item.IsActive</td>
+        <td>@item.IsDeleted</td>
+        <td>@item.HiringDate</td>
+        <td>@item.CreateAt</td>
+        <td>
+            @(item.Department is null ? "No Department" : item.Department.Name)
+        </td>
+        <partial name="_ButtonPartialView" model="@item.Id.ToString()" />
+    </tr>
+}
